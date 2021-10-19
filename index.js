@@ -5,16 +5,19 @@ class Trace {
 
         // fileName refers to the name (or partial name) of an imported module
         // ex: fileName = 'Controller' or './Controller';
-        const { fileName } = this.options;
+        const { fileName, pattern } = this.options;
+        
         
         compiler.hooks.thisCompilation.tap(this.pluginName, (compilation, compilationParams) => {
             compilation.hooks.finishModules.tapAsync(this.pluginName, (modules, callback) => {
                 const dtree = modules.map(m=> ({ name:m.name||m.rawRequest, dep: Array.from(new Set(m.dependencies.map(m => m.module?m.module.rawRequest:'').filter(Boolean)))}));
                 // console.log('[modules]', Math.random(), dtree.length);
+                let regexp = new RegExp(fileName||pattern);
 
-                const parentModules = dtree.filter(pm=>pm.dep.some(m => m.includes(fileName)) );
+                // const parentModules = dtree.filter(pm=>pm.dep.some(m => m.includ9es(fileName)) );
+                const parentModules = dtree.filter(pm=>pm.dep.some(m => regexp.test(m)) );
 
-                const startModuleFull = parentModules[0].dep.find( m => m.includes(fileName) );
+                const startModuleFull = parentModules[0].dep.find( m => regexp.test(m) );
                 const tracingPath = getTracingPath(startModuleFull, dtree);
                 console.log('[TRACE]', tracingPath.join(' -> '));
                 

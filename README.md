@@ -16,7 +16,7 @@ module.exports {
     // ...
 
     plugins: [
-        new Trace({ fileName: '<fileName>' }),
+        new Trace({ pattern: /^fileName$/ }),
 
         // ...
     ],
