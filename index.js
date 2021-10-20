@@ -16,6 +16,10 @@ class Trace {
 
                 // const parentModules = dtree.filter(pm=>pm.dep.some(m => m.includ9es(fileName)) );
                 const parentModules = dtree.filter(pm=>pm.dep.some(m => regexp.test(m)) );
+                if(!parentModules.length){
+                    callback();
+                    return;
+                }
 
                 const startModuleFull = parentModules[0].dep.find( m => regexp.test(m) );
                 const tracingPath = getTracingPath(startModuleFull, dtree);
